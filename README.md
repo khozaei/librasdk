@@ -1,6 +1,6 @@
 # LibraSDK
 
-The SDK could be use for simple peripheral programming using linux.
+Set of libraries and tools to develop I/O-based applications in the area of IoT.
 
 # Compiling
 ```
@@ -14,4 +14,7 @@ make
 sudo ctest
 ```
 # Language server
-i suggest ccls language server.
+ccls language server is useful to develop C projects in vscode.
+
+# DO NOT USE THIS SDK IN PRODUCTION
+The SDK is not stable yet and many of library parts may be changed during the development. It's not production ready.
