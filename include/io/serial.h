@@ -9,7 +9,7 @@
 #define LIBRA_SERIAL_H
 #include <stdint.h>
 #include <stdbool.h>
-
+#include <stddef.h>
 /*! \enum l_parity
     \brief An enum to select parity type
 
@@ -259,16 +259,16 @@ void l_serial_disconnect(LSerialDevice serial_device);
 	\param length: The length of data array
 	\return Returns actually bytes sent
 */
-intmax_t l_serial_transfer(LSerialDevice serial_device, uint8_t *data, uint8_t length);
+intmax_t l_serial_transfer(LSerialDevice serial_device, uint8_t *data, size_t length);
 
 /*! \fn uint8_t l_serial_receive(LSerialDevice serial_device, uint8_t *data, uint8_t length)
     \brief A function to read received data from serial device
 
     \param serial_device: The serial device
-	\param data: The data array to save received data from serial
+	\param outdata: The data array to save received data from serial
 	\param length: The langth of data to read from serial
 	\return Returns actually data received length
 */
-uint8_t l_serial_receive(LSerialDevice serial_device, uint8_t *data, uint8_t length);
+intmax_t l_serial_receive(LSerialDevice serial_device, uint8_t *outdata, size_t length);
 
 #endif
