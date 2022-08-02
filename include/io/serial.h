@@ -10,6 +10,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
+
 /*! \enum l_parity
     \brief An enum to select parity type
 
@@ -33,7 +34,8 @@ enum l_access_mode
 {
 	L_READ_ONLY  = 0,    /**< READ_ONLY: The serial turns to read access only */
 	L_WRITE_ONLY = 1,    /**< WRITE_ONLY: The serial turns to write access only*/
-	L_READ_WRITE = 2     /**< READ_WRITE: the serial turns to full access mode */
+	L_READ_WRITE = 2,    /**< READ_WRITE: the serial turns to full access mode */
+	L_ACCESS_NONE = 255  /**< ACCESS_NONE: without permission */
 };
 
 /*! \enum l_handshake
@@ -237,6 +239,14 @@ void l_serial_configure_115200_8N1(LSerialDevice serial_device);
 */
 void l_serial_configure_9600_8N1(LSerialDevice serial_device);
 
+/*! \fn void l_serial_set_receive_irq (LSerialDevice serial_device, bool enable)
+    \brief A function to enable/disable IRQ on receive data
+
+    \param serial_device: The serial device
+	\param enable: true as enable and false as disable
+*/
+void l_serial_set_receive_irq (LSerialDevice serial_device, bool enable);
+
 /*! \fn void l_serial_connect(LSerialDevice serial_device)
     \brief A function for connect to serial device
 
@@ -270,5 +280,14 @@ intmax_t l_serial_transfer(LSerialDevice serial_device, uint8_t *data, size_t le
 	\return Returns actually data received length
 */
 intmax_t l_serial_receive(LSerialDevice serial_device, uint8_t *outdata, size_t length);
+
+/*! \fn void l_serial_receive_irq_callback (int signum)
+    \brief A callback function that defined by user to receive data using IRQ \
+		the serial IRQ should be enable to have this feature by l_serial_set_receive_irq \
+		function call
+
+    \param serial_device: The serial device that caused the IRQ to handle
+*/
+void l_serial_receive_irq_callback (LSerialDevice serial_device);
 
 #endif

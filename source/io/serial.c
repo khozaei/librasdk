@@ -14,33 +14,54 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <signal.h>
 
 struct l_serial_device
 {
-	uint8_t			*port;
-	uint32_t		baudrate;
-	uint8_t			parity;
-	uint8_t			access;
-	uint8_t			data_bits;
-	uint8_t			stop_bits;
-	bool			local_echo;
-	uint8_t			handshade_mode;
-	//control variables
-	int			    fd;
-	struct termios  config;
-	struct termios  old_config;
+	uint8_t				*port;
+	uint8_t				access;
+	int					fd;
+	struct termios		config;
+	struct termios		old_config;
+	struct sigaction	action;
 };
 
-speed_t l_validate_baudrate(const uint32_t);
+struct l_serial_devices
+{
+	LSerialDevice dev;
+	struct l_serial_devices *next;
+};
 
+static struct l_serial_devices *l_serial_device_list;
+
+speed_t l_validate_baudrate(const uint32_t);
+void l_serial_action (int signum, siginfo_t *info, void *context);
 
 LSerialDevice l_serial_device_new (const uint8_t *port)
 {
 	size_t port_length;
+	struct l_serial_devices *tmp;
 	port_length = (l_strlen(port) + 1);
 	LSerialDevice dev = malloc(sizeof(struct l_serial_device));
 	if (dev)
 	{
+		if ( l_serial_device_list )
+		{
+			tmp = l_serial_device_list;
+			while ( tmp )
+			{
+				tmp = tmp->next;
+			}
+			tmp = malloc(sizeof(struct l_serial_devices));
+			tmp->dev = dev;
+			tmp->next = NULL;
+		}
+		else
+		{
+			l_serial_device_list = malloc(sizeof(struct l_serial_devices));
+			l_serial_device_list->dev = dev;
+			l_serial_device_list->next = NULL;
+		}
 		dev->port = malloc ( sizeof(uint8_t) * port_length);
 		l_strncpy(dev->port,port,port_length);
 		//init termios config like cfmakeraw
@@ -76,7 +97,6 @@ bool l_serial_set_baudrate (LSerialDevice serial_device, const uint32_t baudrate
 	speed = l_validate_baudrate(baudrate); 
 	if (serial_device && speed != B0)
 	{
-		serial_device->baudrate = baudrate;
 		result = cfsetospeed(&serial_device->config, speed);
 		return ((result == 0) && (cfsetispeed(&serial_device->config, speed) == 0));
 	}
@@ -87,7 +107,6 @@ void l_serial_set_parity (LSerialDevice serial_device, LParity parity)
 {
 	if ( serial_device )
 	{
-		serial_device->parity = parity;
 		serial_device->config.c_cflag &= ~( PARENB | PARODD );
 		if (parity == L_PARITY_EVEN)
 		{
@@ -291,6 +310,286 @@ void l_serial_configure_9600_8N1 (LSerialDevice dev)
 	l_serial_configure(dev, 9600, L_PARITY_NONE, L_READ_WRITE, 8, 1, false, L_HANDSHAKE_NONE);
 }
 
+uint32_t l_serial_get_baudrate (LSerialDevice dev)
+{
+	speed_t baud;
+	if ( dev )
+	{
+		if ( dev->fd > 0)
+		{
+			struct termios tmp;
+			tcgetattr(dev->fd, &tmp);
+			baud = cfgetispeed(&tmp);
+		}
+		else
+		{
+			baud = cfgetispeed(&dev->config);
+		}
+	}
+	switch(baud)
+	{
+		case B50:
+			return 50;
+		case B75:
+			return 75;
+		case B110:
+			return 110;
+		case B134:
+			return 134;
+		case B150:
+			return 150;
+		case B200:
+			return 200;
+		case B300:
+			return 300;
+		case B600:
+			return 600;
+		case B1200:
+			return 1200;
+		case B2400:
+			return 2400;
+		case B4800:
+			return 4800;
+		case B9600:
+			return 9600;
+		case B19200:
+			return 19200;
+		case B38400:
+			return 38400;
+		case B57600:
+			return 57600;
+		case B115200:
+			return 115200;
+		case B230400:
+			return 230400;
+		case B460800:
+			return 460800;
+		case B500000:
+			return 500000;
+		case B576000:
+			return 576000;
+		case B921600:
+			return 921600;
+		case B1000000:
+			return 1000000;
+		case B1152000:
+			return 1152000;
+		case B1500000:
+			return 1500000;
+		case B2000000:
+			return 2000000;
+		//additional non-sparc baudrates
+		case B2500000:
+			return 2500000;
+		case B3000000:
+			return 3000000;
+		case B3500000:
+			return 3500000;
+		case B4000000:
+			return 4000000;
+
+		default:
+			return 0;
+	}
+}
+
+LParity l_serial_get_parity (LSerialDevice dev)
+{
+	struct termios tmp;
+	if ( dev )
+	{
+		if ( dev->fd > 0 )
+		{
+			tcgetattr(dev->fd, &tmp);
+		}
+		else
+		{
+			memcpy(&tmp,&dev->config,sizeof(dev->config));
+		}
+
+		if ( (tmp.c_cflag & PARENB) > 0 )
+		{
+			if ( (tmp.c_cflag & PARODD) > 0 )
+			{
+				return L_PARITY_ODD;
+			}
+			else
+			{
+				return L_PARITY_EVEN;
+			}
+		}
+		else
+		{
+			return L_PARITY_NONE;
+		}
+	}
+	return L_PARITY_NONE;
+}
+
+LAccessMode l_serial_get_access_mode (LSerialDevice dev)
+{
+	int oflag;
+	if ( dev )
+	{
+		if ( dev->fd > 0 )
+		{
+			oflag = fcntl(dev->fd, F_GETFL);
+			if ( (oflag & O_RDWR) > 0 )
+			{
+				return L_READ_WRITE;
+			}
+			else if ( (oflag & O_WRONLY) > 0 )
+			{
+				return L_WRITE_ONLY;
+			}
+			else
+			{
+				return L_READ_ONLY;
+			}
+		}
+		else
+		{
+			return dev->access;
+		}
+	}
+	return L_ACCESS_NONE;
+}
+
+uint8_t l_serial_get_databits (LSerialDevice dev)
+{
+	struct termios tmp;
+	if ( dev )
+	{
+		if ( dev->fd > 0 )
+		{
+			tcgetattr(dev->fd, &tmp);
+		}
+		else
+		{
+			memcpy(&tmp,&dev->config,sizeof(dev->config));
+		}
+
+		switch (tmp.c_cflag & CSIZE)
+		{
+			case CS5:
+				return 5;
+			case CS6:
+				return 6;
+			case CS7:
+				return 7;
+			case CS8:
+				return 8;
+		}
+	}
+	return 0;
+}
+
+uint8_t l_serial_get_stopbits (LSerialDevice dev)
+{
+	struct termios tmp;
+	if ( dev )
+	{
+		if ( dev->fd > 0 )
+		{
+			tcgetattr(dev->fd, &tmp);
+		}
+		else
+		{
+			memcpy(&tmp,&dev->config,sizeof(dev->config));
+		}
+
+		if (tmp.c_cflag & CSTOPB)
+		{
+			return 2;
+		}
+	}
+	return 1;
+}
+
+bool l_serial_get_local_echo (LSerialDevice dev)
+{
+	struct termios tmp;
+	if ( dev )
+	{
+		if ( dev->fd > 0 )
+		{
+			tcgetattr(dev->fd, &tmp);
+		}
+		else
+		{
+			memcpy(&tmp,&dev->config,sizeof(dev->config));
+		}
+
+		if (tmp.c_cflag & CLOCAL)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+LHandshake l_serial_get_handshake (LSerialDevice dev)
+{
+	struct termios tmp;
+	bool software, hardware;
+	software = false;
+	hardware = false;
+	if ( dev )
+	{
+		if ( dev->fd > 0 )
+		{
+			tcgetattr(dev->fd, &tmp);
+		}
+		else
+		{
+			memcpy(&tmp,&dev->config,sizeof(dev->config));
+		}
+
+		software = ((tmp.c_cflag & (IXON | IXOFF)) > 0);
+		hardware = ((tmp.c_cflag & CRTSCTS) > 0);
+	}
+	if ( software && hardware )
+	{
+		return L_HANDSHAKE_BOTH;
+	}
+	else if ( hardware )
+	{
+		return L_HANDSHAKE_HARDWARE;
+	}
+	else if ( software )
+	{
+		return L_HANDSHAKE_SOFTWARE;
+	}
+	return L_HANDSHAKE_NONE;
+}
+
+void l_serial_set_receive_irq (LSerialDevice dev, bool enable)
+{
+	struct sigaction old_action;
+	if ( dev )
+	{
+		if ( dev->fd != -1)
+		{
+			if ( enable )
+			{
+				dev->action.sa_sigaction = 	l_serial_action;
+				dev->action.sa_flags |= SA_SIGINFO;
+				dev->action.sa_restorer = NULL;
+				sigaction(SIGIO, &dev->action, NULL);
+				fcntl(dev->fd, F_SETFL, O_ASYNC | FNDELAY);
+				fcntl(dev->fd, F_GETOWN, getpid());
+			}
+			else
+			{
+				memcpy(&old_action, &dev->action, sizeof(dev->action));
+				dev->action.sa_sigaction = NULL;
+				dev->action.sa_flags = SA_RESETHAND;
+				sigaction(SIGIO, &dev->action, &old_action);
+			}
+		}
+	}
+}
+
 speed_t l_validate_baudrate(const uint32_t baud)
 {
 	switch(baud)
@@ -357,5 +656,26 @@ speed_t l_validate_baudrate(const uint32_t baud)
 
 		default:
 			return B0;
+	}
+}
+
+void l_serial_action (int signum, siginfo_t *info, void *context)
+{
+	struct l_serial_devices *tmp;
+	UNUSED(signum)
+	UNUSED(context)
+	if ( info )
+	{
+		tmp = l_serial_device_list;
+		while ( tmp )
+		{
+			if (tmp->dev)
+			{
+				if ( tmp->dev->fd == info->si_fd )
+				{
+					l_serial_receive_irq_callback(tmp->dev);
+				}
+			}
+		}
 	}
 }
