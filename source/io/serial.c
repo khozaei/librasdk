@@ -679,3 +679,8 @@ void l_serial_action (int signum, siginfo_t *info, void *context)
 		}
 	}
 }
+
+__weak void l_serial_receive_irq_callback (LSerialDevice dev)
+{
+	UNUSED(dev)
+}
