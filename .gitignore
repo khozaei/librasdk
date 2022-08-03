@@ -19,3 +19,4 @@ Sessionx.vim
 tags
 # Persistent undo
 [._]*.un~
+compile_commands.json

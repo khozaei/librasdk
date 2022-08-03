@@ -1,1 +1,5 @@
 add_subdirectory(io)
+include_directories(./)
+add_executable(test_exec main.c io/serial_test.c)
+target_link_libraries(test_exec io_serial cmocka)
+add_test(test_exec test_exec)

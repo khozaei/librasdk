@@ -1,3 +1,0 @@
-add_executable(io_serial_test serial_test.c)
-target_link_libraries(io_serial_test io_serial)
-add_test(io_serial_test io_serial_test)

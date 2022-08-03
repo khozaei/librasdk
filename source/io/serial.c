@@ -18,7 +18,7 @@
 
 struct l_serial_device
 {
-	uint8_t				*port;
+	char				*port;
 	uint8_t				access;
 	int					fd;
 	struct termios		config;
@@ -37,11 +37,11 @@ static struct l_serial_devices *l_serial_device_list;
 speed_t l_validate_baudrate(const uint32_t);
 void l_serial_action (int signum, siginfo_t *info, void *context);
 
-LSerialDevice l_serial_device_new (const uint8_t *port)
+LSerialDevice l_serial_device_new (const char *port)
 {
 	size_t port_length;
 	struct l_serial_devices *tmp;
-	port_length = (l_strlen(port) + 1);
+	port_length = (strlen(port) + 1);
 	LSerialDevice dev = malloc(sizeof(struct l_serial_device));
 	if (dev)
 	{
@@ -63,7 +63,7 @@ LSerialDevice l_serial_device_new (const uint8_t *port)
 			l_serial_device_list->next = NULL;
 		}
 		dev->port = malloc ( sizeof(uint8_t) * port_length);
-		l_strncpy(dev->port,port,port_length);
+		strncpy(dev->port,port,port_length);
 		//init termios config like cfmakeraw
 		dev->config.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP
                 | INLCR | IGNCR | ICRNL | IXON);

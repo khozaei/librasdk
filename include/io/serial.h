@@ -86,7 +86,7 @@ typedef enum l_handshake LHandshake;
 
     \param port: The port name, for ex. "/dev/ttyAMA0" or "/dev/ttyUSB0"
 */
-LSerialDevice l_serial_device_new (const uint8_t *port);
+LSerialDevice l_serial_device_new (const char *port);
 
 /*! \fn void l_serial_device_destroy (LSerialDevice serial_device)
     \brief A function to free all allocated memory by the given serial device
