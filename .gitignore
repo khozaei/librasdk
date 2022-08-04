@@ -20,3 +20,4 @@ tags
 # Persistent undo
 [._]*.un~
 compile_commands.json
+.ccls-cache

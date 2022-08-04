@@ -4,6 +4,9 @@ project(librasdk)
 
 include(AddGitSubmodule.cmake)
 
+option(WITH_EXAMPLES "Build examples" OFF)
+option(UNIT_TESTING "Build with unit testing" OFF)
+
 add_git_submodule(tools/cmocka)
 
 include_directories(include)
