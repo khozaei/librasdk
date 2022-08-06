@@ -93,7 +93,7 @@ LSerialDevice l_serial_device_new (const char *port);
 
     \param serial_device: The serial device that should be free
 */
-void l_serial_device_destroy (LSerialDevice serial_device);
+void l_serial_device_destroy (LSerialDevice *serial_device);
 
 /*! \fn bool l_serial_set_baudrate (LSerialDevice serial_device, const uint32_t baudrate)
     \brief A function to set serial baud rate
@@ -102,7 +102,7 @@ void l_serial_device_destroy (LSerialDevice serial_device);
     \param baudrate: The baudrate value
     \return Returns true if baudrate value is valid else returns false
 */
-bool l_serial_set_baudrate (LSerialDevice serial_device, const uint32_t baudrate);
+bool l_serial_set_baudrate (LSerialDevice *serial_device, const uint32_t baudrate);
 
 /*! \fn void l_serial_set_parity (LSerialDevice serial_device, LParity parity)
     \brief A function to set serial parity
@@ -110,7 +110,7 @@ bool l_serial_set_baudrate (LSerialDevice serial_device, const uint32_t baudrate
     \param serial_device: The serial device
     \param parity: The serial parity
 */
-void l_serial_set_parity (LSerialDevice serial_device, LParity parity);
+void l_serial_set_parity (LSerialDevice *serial_device, LParity parity);
 
 /*! \fn void l_serial_set_access_mode (LSerialDevice serial_device, LAccessMode access)
     \brief A function to set serial access mode
@@ -118,7 +118,7 @@ void l_serial_set_parity (LSerialDevice serial_device, LParity parity);
     \param serial_device: The serial device
     \param access: The serial access mode
 */
-void l_serial_set_access_mode (LSerialDevice serial_device, LAccessMode access);
+void l_serial_set_access_mode (LSerialDevice *serial_device, LAccessMode access);
 
 /*! \fn void l_serial_set_databits (LSerialDevice serial_device, uint8_t databits)
     \brief A function to set serial databits
@@ -126,7 +126,7 @@ void l_serial_set_access_mode (LSerialDevice serial_device, LAccessMode access);
     \param serial_device: The serial device
     \param databits: The serial databits value from 5 to 8
 */
-void l_serial_set_databits (LSerialDevice serial_device, uint8_t databits);
+void l_serial_set_databits (LSerialDevice *serial_device, uint8_t databits);
 
 /*! \fn void l_serial_set_stopbits (LSerialDevice serial_device, uint8_t stopbits)
     \brief A function to set serial stopbits
@@ -134,7 +134,7 @@ void l_serial_set_databits (LSerialDevice serial_device, uint8_t databits);
     \param serial_device: The serial device
     \param stopbits: The serial stopbits with value of 1 or 2
 */
-void l_serial_set_stopbits (LSerialDevice serial_device, uint8_t stopbits);
+void l_serial_set_stopbits (LSerialDevice *serial_device, uint8_t stopbits);
 
 /*! \fn void l_serial_set_local_echo (LSerialDevice serial_device, bool echo)
     \brief A function to set serial local echo
@@ -142,7 +142,7 @@ void l_serial_set_stopbits (LSerialDevice serial_device, uint8_t stopbits);
     \param serial_device: The serial device
     \param echo: The serial local echo enable/disable (true/false)
 */
-void l_serial_set_local_echo (LSerialDevice serial_device, bool echo);
+void l_serial_set_local_echo (LSerialDevice *serial_device, bool echo);
 
 /*! \fn void l_serial_set_handshake (LSerialDevice serial_device, LHandshake handshake)
     \brief A function to set serial handshake mode
@@ -150,7 +150,7 @@ void l_serial_set_local_echo (LSerialDevice serial_device, bool echo);
     \param serial_device: The serial device
     \param handshake: The serial handshake mode (NONE,SOFTWARE,HARDWARE,BOTH)
 */
-void l_serial_set_handshake (LSerialDevice serial_device, LHandshake handshake);
+void l_serial_set_handshake (LSerialDevice *serial_device, LHandshake handshake);
 
 /*! \fn uint32_t l_serial_get_baudrate (LSerialDevice serial_device)
     \brief A function to get current serial baud rate
@@ -158,7 +158,7 @@ void l_serial_set_handshake (LSerialDevice serial_device, LHandshake handshake);
     \param serial_device: The serial device
     \return Returns serial baudrate value
 */
-uint32_t l_serial_get_baudrate (LSerialDevice serial_device);
+uint32_t l_serial_get_baudrate (LSerialDevice *serial_device);
 
 /*! \fn LParity l_serial_get_parity (LSerialDevice serial_device)
     \brief A function to get serial parity
@@ -166,7 +166,7 @@ uint32_t l_serial_get_baudrate (LSerialDevice serial_device);
     \param serial_device: The serial device
     \return Returns serial parity
 */
-LParity l_serial_get_parity (LSerialDevice serial_device);
+LParity l_serial_get_parity (LSerialDevice *serial_device);
 
 /*! \fn LAccessMode l_serial_get_access_mode (LSerialDevice serial_device)
     \brief A function to get serial access mode
@@ -174,7 +174,7 @@ LParity l_serial_get_parity (LSerialDevice serial_device);
     \param serial_device: The serial device
     \return Returns serial access mode
 */
-LAccessMode l_serial_get_access_mode (LSerialDevice serial_device);
+LAccessMode l_serial_get_access_mode (LSerialDevice *serial_device);
 
 /*! \fn uint8_t l_serial_get_databits (LSerialDevice serial_device)
     \brief A function to get serial databits
@@ -182,7 +182,7 @@ LAccessMode l_serial_get_access_mode (LSerialDevice serial_device);
     \param serial_device: The serial device
     \return Returns serial databits value
 */
-uint8_t l_serial_get_databits (LSerialDevice serial_device);
+uint8_t l_serial_get_databits (LSerialDevice *serial_device);
 
 /*! \fn uint8_t l_serial_get_stopbits (LSerialDevice serial_device)
     \brief A function to get serial stopbits
@@ -190,7 +190,7 @@ uint8_t l_serial_get_databits (LSerialDevice serial_device);
     \param serial_device: The serial device
     \return Returns serial stopbits
 */
-uint8_t l_serial_get_stopbits (LSerialDevice serial_device);
+uint8_t l_serial_get_stopbits (LSerialDevice *serial_device);
 
 /*! \fn bool l_serial_get_local_echo (LSerialDevice serial_device)
     \brief A function to get serial local echo
@@ -198,7 +198,7 @@ uint8_t l_serial_get_stopbits (LSerialDevice serial_device);
     \param serial_device: The serial device
     \return Returns serial local echo state
 */
-bool l_serial_get_local_echo (LSerialDevice serial_device);
+bool l_serial_get_local_echo (LSerialDevice *serial_device);
 
 /*! \fn LHandshake l_serial_get_handshake (LSerialDevice serial_device)
     \brief A function to get serial handshake mode
@@ -206,7 +206,7 @@ bool l_serial_get_local_echo (LSerialDevice serial_device);
     \param serial_device: The serial device
     \return Returns serial handshake mode (NONE,SOFTWARE,HARDWARE,BOTH)
 */
-LHandshake l_serial_get_handshake (LSerialDevice serial_device);
+LHandshake l_serial_get_handshake (LSerialDevice *serial_device);
 
 /*! \fn bool l_serial_configure (LSerialDevice serial_device, const uint32_t baudrate, LParity parity,
 		LAccessMode access, uint8_t databits, uint8_t stopbits, bool local_echo, LHandshake handshake)
@@ -222,7 +222,7 @@ LHandshake l_serial_get_handshake (LSerialDevice serial_device);
 	\param handshake: The serial handshake mode (NONE,SOFTWARE,HARDWARE,BOTH)
 	\return Returns true if baudrate value is valid else returns false
 */
-bool l_serial_configure (LSerialDevice serial_device, const uint32_t baudrate, LParity parity, 
+bool l_serial_configure (LSerialDevice *serial_device, const uint32_t baudrate, LParity parity, 
 		LAccessMode access, uint8_t databits, uint8_t stopbits, bool local_echo, LHandshake handshake);
 
 /*! \fn void l_serial_configure_115200_8N1(LSerialDevice serial_device)
@@ -230,14 +230,14 @@ bool l_serial_configure (LSerialDevice serial_device, const uint32_t baudrate, L
 
     \param serial_device: The serial device
 */
-void l_serial_configure_115200_8N1(LSerialDevice serial_device);
+void l_serial_configure_115200_8N1(LSerialDevice *serial_device);
 
 /*! \fn void l_serial_configure_9600_8N1(LSerialDevice serial_device)
     \brief A function to configure serial with 9600 baudrate, 8 databits, none parity, 1 stopbits, and read_write access mode
 
     \param serial_device: The serial device
 */
-void l_serial_configure_9600_8N1(LSerialDevice serial_device);
+void l_serial_configure_9600_8N1(LSerialDevice *serial_device);
 
 /*! \fn void l_serial_set_receive_irq (LSerialDevice serial_device, bool enable)
     \brief A function to enable/disable IRQ on receive data
@@ -245,21 +245,21 @@ void l_serial_configure_9600_8N1(LSerialDevice serial_device);
     \param serial_device: The serial device
 	\param enable: true as enable and false as disable
 */
-void l_serial_set_receive_irq (LSerialDevice serial_device, bool enable);
+void l_serial_set_receive_irq (LSerialDevice *serial_device, bool enable);
 
 /*! \fn void l_serial_connect(LSerialDevice serial_device)
     \brief A function for connect to serial device
 
     \param serial_device: The serial device
 */
-void l_serial_connect(LSerialDevice serial_device);
+void l_serial_connect(LSerialDevice *serial_device);
 
 /*! \fn void l_serial_disconnect(LSerialDevice serial_device)
     \brief A function to disconnect from serial device
 
     \param serial_device: The serial device
 */
-void l_serial_disconnect(LSerialDevice serial_device);
+void l_serial_disconnect(LSerialDevice *serial_device);
 
 /*! \fn void l_serial_disconnect(LSerialDevice serial_device)
     \brief A function to disconnect from serial device
@@ -269,7 +269,7 @@ void l_serial_disconnect(LSerialDevice serial_device);
 	\param length: The length of data array
 	\return Returns actually bytes sent
 */
-intmax_t l_serial_transfer(LSerialDevice serial_device, uint8_t *data, size_t length);
+intmax_t l_serial_transfer(LSerialDevice *serial_device, uint8_t *data, size_t length);
 
 /*! \fn uint8_t l_serial_receive(LSerialDevice serial_device, uint8_t *data, uint8_t length)
     \brief A function to read received data from serial device
@@ -279,7 +279,7 @@ intmax_t l_serial_transfer(LSerialDevice serial_device, uint8_t *data, size_t le
 	\param length: The langth of data to read from serial
 	\return Returns actually data received length
 */
-intmax_t l_serial_receive(LSerialDevice serial_device, uint8_t *outdata, size_t length);
+intmax_t l_serial_receive(LSerialDevice *serial_device, uint8_t *outdata, size_t length);
 
 /*! \fn void l_serial_receive_irq_callback (int signum)
     \brief A callback function that defined by user to receive data using IRQ \
@@ -288,6 +288,6 @@ intmax_t l_serial_receive(LSerialDevice serial_device, uint8_t *outdata, size_t 
 
     \param serial_device: The serial device that caused the IRQ to handle
 */
-void l_serial_receive_irq_callback (LSerialDevice serial_device);
+void l_serial_receive_irq_callback (LSerialDevice *serial_device);
 
 #endif
