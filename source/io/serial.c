@@ -232,19 +232,19 @@ void l_serial_connect(LSerialDevice *dev)
 			(*dev)->fd = -1;
 		}
 		switch((*dev)->access)
-			{
-				case L_READ_ONLY:
-					flag = (O_RDONLY | O_NONBLOCK);
-					break;
-				case L_WRITE_ONLY:
-					flag = (O_WRONLY | O_NONBLOCK);
-					break;
-				case L_READ_WRITE:
-					flag = (O_RDWR | O_NONBLOCK);
-					break;
-				default:
-					flag = (O_RDONLY | O_NONBLOCK);
-			}
+		{
+			case L_READ_ONLY:
+				flag = (O_RDONLY | O_NONBLOCK);
+				break;
+			case L_WRITE_ONLY:
+				flag = (O_WRONLY | O_NONBLOCK);
+				break;
+			case L_READ_WRITE:
+				flag = (O_RDWR | O_NONBLOCK);
+				break;
+			default:
+				flag = (O_RDONLY | O_NONBLOCK);
+		}
 		(*dev)->fd = open((*dev)->port, flag);
 		if ((*dev)->fd > 0)
 		{

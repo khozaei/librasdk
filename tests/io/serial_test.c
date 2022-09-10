@@ -3,6 +3,10 @@
 #include "io/serial.h"
 
 #include <stdlib.h>
+#include <regex.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdio.h>
 
 int serial_setup (void **state)
 {
