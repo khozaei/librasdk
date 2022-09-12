@@ -1,0 +1,5 @@
+clang
+%c
+-I/usr/local/include
+-Iinclude
+-I3rdparty/stb
