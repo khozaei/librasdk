@@ -9,7 +9,7 @@ option(UNIT_TESTING "Build with unit testing" OFF)
 
 add_git_submodule(tools/cmocka)
 
-include_directories(include)
+include_directories(include 3rdparty/stb)
 
 enable_testing()
 

@@ -19,7 +19,10 @@ int serial_setup (void **state)
 
 int serial_teardown (void **state)
 {
-	free(*state);
+	LSerialDevice dev;
+
+	dev = *state;
+	l_serial_device_destroy(&dev);
 	return 0;
 }
 
@@ -27,8 +30,9 @@ void serial_device_new (void **state)
 {
 	LSerialDevice dev;
 
-	UNUSED(state)
+
 	dev = l_serial_device_new("/dev/ttyS0");
+	*state = dev;
 	assert_non_null ( dev );
 }
 

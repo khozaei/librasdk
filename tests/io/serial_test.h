@@ -3,9 +3,6 @@
 #include <setjmp.h>
 #include <cmocka.h>
 
-void fork_socat(void);
-void kill_socat(void);
-
 int serial_setup (void **state);
 int serial_teardown (void **state);
 void serial_device_new (void **state);

@@ -17,9 +17,9 @@
 #include <signal.h>
 #include <stdio.h>
 
-#ifndef LIBRA_MAX_SERIAL_DEVICE
-#define LIBRA_MAX_SERIAL_DEVICE 64
-#endif
+#define STB_DS_IMPLEMENTATION
+#include "stb_ds.h"
+
 
 struct l_serial_device
 {
@@ -31,9 +31,7 @@ struct l_serial_device
 	struct sigaction	action;
 };
 
-
-static LSerialDevice l_serial_device_list[LIBRA_MAX_SERIAL_DEVICE] = {NULL};
-static uint16_t l_serial_device_index = 0;
+static LSerialDevice *l_serial_device_list = NULL; 
 
 speed_t l_validate_baudrate(const uint32_t);
 void l_serial_action (int signum, siginfo_t *info, void *context);
@@ -43,13 +41,11 @@ LSerialDevice l_serial_device_new (const char *port)
 	size_t port_length;
 	LSerialDevice dev;
 
-	if (l_serial_device_index >= LIBRA_MAX_SERIAL_DEVICE - 1)
-		return NULL;
 	port_length = (strlen(port) + 1);
 	dev = malloc(sizeof(struct l_serial_device));
 	if (dev)
 	{
-		l_serial_device_list[l_serial_device_index++] = dev;
+		arrput(l_serial_device_list,dev);
 		dev->port = malloc ( sizeof(uint8_t) * port_length);
 		strncpy(dev->port,port,port_length);
 		//init termios config like cfmakeraw
@@ -69,23 +65,25 @@ void l_serial_device_destroy (LSerialDevice *dev)
 {
 	struct l_serial_devices *tmp;
 	struct l_serial_devices *old;
-	
-	if ( *dev != NULL )
+
+	if ( *dev )
 	{
 		if ((*dev)->fd > 0)
 		{
 			tcsetattr((*dev)->fd, TCSANOW, &((*dev)->old_config));
 		}
-		for ( int i = 0; i <= l_serial_device_index; i++)
+		free((*dev)->port);
+		for ( int i = 0; i <= arrlen(l_serial_device_list); i++)
 		{
 			if ( l_serial_device_list[i] != NULL && 
 					l_serial_device_list[i]->fd == (*dev)->fd)
 			{
-				l_serial_device_list[i] = NULL;
+				arrdelswap(l_serial_device_list,i);
 			}
 		}
-		free((*dev)->port);
 		free((*dev));
+		if (arrlenu(l_serial_device_list) == 0)
+			arrfree(l_serial_device_list);
 		*dev = NULL;
 	}
 }
@@ -690,7 +688,7 @@ void l_serial_action (int signum, siginfo_t *info, void *context)
 	UNUSED(context)
 	if ( info )
 	{
-		for ( int i = 0; i <= l_serial_device_index; i++)
+		for ( int i = 0; i <= arrlen(l_serial_device_list); i++)
 		{
 			if ( l_serial_device_list[i] != NULL && l_serial_device_list[i]->fd == info->si_fd)
 			{
