@@ -6,7 +6,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <poll.h>
-#include <io/gpio-sysfs.h>
+#include <libra/io/gpio-sysfs.h>
 
 int pin_open(int pin)
   {

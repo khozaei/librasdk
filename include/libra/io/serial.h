@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, Hiva IoT (hiva-iot.com) and Amin Khozaei <amin.khozaei@gmail.com>
+ * Copyright (c) 2022, Amin Khozaei <amin.khozaei@gmail.com>
  *
  * SPDX-License-Identifier: Apache-2.0
  *

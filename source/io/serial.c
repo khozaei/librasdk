@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  *
  */
-#include "libra_core.h"
-#include "io/serial.h"
+#include "libra/core.h"
+#include "libra/io/serial.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <termios.h>

@@ -1,6 +1,5 @@
 #include "serial_test.h"
-#include "libra_core.h"
-#include "io/serial.h"
+#include "libra/io/serial.h"
 
 #include <stdlib.h>
 #include <regex.h>

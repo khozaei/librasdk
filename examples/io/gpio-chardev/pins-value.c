@@ -5,8 +5,8 @@
 #include <fcntl.h>
 #include <string.h>
 #include <unistd.h>
-#include <io/gpio-chardev.h>
-#include <io/rpi/pins.h>
+#include <libra/io/gpio-chardev.h>
+#include <libra/io/rpi/pins.h>
 
 #define GPIO_EXAMPLE_CHIP_NAME "/dev/gpiochip0"
 
