@@ -63,6 +63,21 @@ enum l_gpio_mode
 	L_GPIO_MODE_MMAP	  /**< MMAP: uses memory map /dev/memmap to manage GPIO */
 };
 
+/*! \enum l_gpio_pull
+    \brief An enum to enable pull-up/pull-down
+	
+	An enum for changing GPIO pull mode. with possible modes below: 
+		L_GPIO_PULL_NOPULL: disables pull-up and pull-down
+		L_GPIO_PULL_UP: enables pull-up
+		L_GPIO_PULL_DOWN: enables pull-down
+ */
+enum l_gpio_pull
+{
+	L_GPIO_PULL_NOPULL,    /**< NOPULL: Neither pull-up nor pull-down */
+	L_GPIO_PULL_UP,		   /**< PULL_UP: pull-up sets into gpio */
+	L_GPIO_PULL_DOWN	   /**< PULL_DOWN: pull-down sets into gpio */
+};
+
 /*! \typedef LGpioDirection
     \brief A type for GPIO direction (input or output)
 
@@ -91,6 +106,12 @@ typedef enum l_gpio_event LGpioEvent;
 */
 typedef enum l_gpio_value LGpioValue;
 
+/*! \typedef LGpioPull
+    \brief A type for GPIO Pull option
+
+    A type for l_gpio_pull enum
+*/
+typedef enum l_gpio_pull LGpioPull;
 
 #endif
 

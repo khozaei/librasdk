@@ -13,6 +13,7 @@ struct l_gpio_device
 	LGpioDirection	direction;
 	LGpioEvent		event;
 	LGpioMode		mode;
+	LGpioPull		pull;
 	uint16_t		pin;
 };
 
