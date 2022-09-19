@@ -2,3 +2,9 @@
 	path = tools/cmocka
 	url = https://gitlab.com/cmocka/cmocka.git
 	branch = stable-1.1
+[submodule "3rdparty/mraa"]
+	path = 3rdparty/mraa
+	url = https://github.com/eclipse/mraa.git
+[submodule "3rdparty/mlib"]
+	path = 3rdparty/mlib
+	url = https://github.com/P-p-H-d/mlib.git
